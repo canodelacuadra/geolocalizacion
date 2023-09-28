@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocalización con Mapa</title>
+    <!-- Incluye la hoja de estilo de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+    <h1>Obtener Geolocalización con Mapa</h1>
+    <p>Latitud: <span id="latitud"></span></p>
+    <p>Longitud: <span id="longitud"></span></p>
+    
+    <button id="obtener-geolocalizacion">Obtener Geolocalización</button>
+    
+    <!-- Agrega un contenedor para el mapa -->
+    <div id="map" style="height: 300px;"></div>
+    
+    <!-- Incluye la librería Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        // Función para obtener la geolocalización y mostrarla en el mapa.
+        function obtenerGeolocalizacion() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var latitud = position.coords.latitude;
+                    var longitud = position.coords.longitude;
+
+                    document.getElementById("latitud").textContent = latitud;
+                    document.getElementById("longitud").textContent = longitud;
+
+                    // Crea un mapa de OpenStreetMap en el contenedor "map".
+                    var map = L.map('map').setView([latitud, longitud], 17);
+
+                    // Agrega una capa de mapa base de OpenStreetMap.
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    // Agrega un marcador en la posición geolocalizada.
+                    L.marker([latitud, longitud]).addTo(map)
+                        .bindPopup('Ubicación actual')
+                        .openPopup();
+                });
+            } else {
+                alert("Tu navegador no es compatible con la geolocalización.");
+            }
+        }
+
+        document.getElementById("obtener-geolocalizacion").addEventListener("click", obtenerGeolocalizacion);
+    </script>
+</body>
+</html>
